@@ -1,0 +1,85 @@
+{% extends "layouts/_base.html" %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto p-6 mt-1 bg-white rounded-lg shadow-md">
+    {% if request.user == event.organizer %}
+        {% include "includes/dropdown.html"%}
+    {% endif %}
+
+    <!-- Event image -->
+    <div class="w-full h-48 bg-gray-200 rounded-lg mb-4">
+        <img
+            src="{{ event.image_url.url }}"
+            alt="{{ event.name }}"
+            class="w-full h-full object-cover rounded-lg"
+        />
+    </div>
+
+    <!-- Event Name -->
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ event.name }}</h1>
+
+    <!-- Event Date -->
+    <div class="text-lg text-gray-600 mb-4">
+        <strong class="text-gray-800">Date:</strong>
+        {{ event.date|date:"F j Y" }}
+    </div>
+
+    <!-- Event Description -->
+    <div class="text-lg text-gray-600 mb-6">
+        <strong class="text-gray-800">Description:</strong>
+        <p>
+            {{ event.description }} Lorem ipsum dolor sit amet consectetur
+            adipisicing elit. Dolorem aliquid nemo alias ipsum, commodi
+            perferendis illo dolores ducimus hic placeat.
+        </p>
+    </div>
+
+    <!-- Organizer Information -->
+    <div class="text-lg text-gray-600 mb-6">
+        <strong class="text-gray-800">Organizer:</strong>
+        <span class="text-blue-600">{{ event.organizer.username }}</span>
+    </div>
+
+    <!-- Availability & Ticket Booking -->
+    <div class="mt-5">
+        {% comment %} {% if event.is_sold_out %}
+        <div class="text-center bg-red-200 text-red-800 p-4 rounded-lg mb-6">
+            <p class="font-semibold">SOLD OUT</p>
+            <p class="mt-2">
+                Join the waiting list to be notified when tickets become
+                available!
+            </p>
+            <!-- Add a form or link for joining the waiting list -->
+            <form
+                action="{% url 'join_waitlist' event.event_id %}"
+                method="POST"
+                class="mt-4"
+            >
+                {% csrf_token %}
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    class="px-4 py-2 border rounded-lg text-gray-800 w-full sm:w-auto mb-2 sm:mb-0"
+                />
+                <button
+                    type="submit"
+                    class="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-6 py-2 mt-2 sm:mt-0"
+                >
+                    Join Waiting List
+                </button>
+            </form>
+        </div>
+        {% else %} {% endcomment %}
+        <a
+            href="{% url 'book_event' event.event_id %}"
+            class="block text-center text-white bg-green-500 hover:bg-green-600 font-medium rounded-lg text-lg px-8 py-3 transition ease-in-out duration-300"
+        >
+            Book a Spot
+        </a>
+        {% comment %} {% endif %} {% endcomment %}
+    </div>
+</div>
+{% endblock content %}

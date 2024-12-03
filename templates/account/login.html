@@ -1,0 +1,83 @@
+{% extends "layouts/_base.html" %}
+{% load i18n %}
+{% load static %}
+{% load allauth account %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+    <img src="{% static "images/logo.png" %}" alt="ticketize log" class="w-44">
+    <div class="w-full max-w-sm rounded-lg p-6 sm:p-8">
+        <!-- Title -->
+        <h1 class="text-lg sm:text-2xl font-bold text-gray-800 mb-4 text-center">
+            {% trans "Sign In" %}
+        </h1>
+
+        <!-- Sign-up Redirect -->
+        <p class="text-sm text-gray-600 text-center mb-6">
+            {% blocktranslate %}
+                If you have not created an account yet, then please 
+                <a href="{{ signup_url }}" class="text-blue-500 hover:underline">
+                    sign up
+                </a> first.
+            {% endblocktranslate %}
+        </p>
+
+        <!-- Login Form -->
+        {% if not SOCIALACCOUNT_ONLY %}
+            {% url 'account_login' as login_url %}
+            <form action="{{ login_url }}" method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    {{ form|crispy }}
+                </div>
+                {{ redirect_field }}
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-blue-600 transition">
+                        {% trans "Sign In" %}
+                    </button>
+                </div>
+            </form>
+        {% endif %}
+
+        <!-- Additional Sign-in Options -->
+        {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+            <hr class="my-6">
+            <div class="space-y-4">
+                {% if PASSKEY_LOGIN_ENABLED %}
+                    <button id="passkey_login" 
+                            form="mfa_login"
+                            class="w-full border border-blue-500 text-blue-500 font-semibold py-2 rounded-lg hover:bg-blue-50 transition">
+                        {% trans "Sign in with a passkey" %}
+                    </button>
+                {% endif %}
+                {% if LOGIN_BY_CODE_ENABLED %}
+                    <a href="{{ request_login_code_url }}" 
+                       class="w-full block text-center border border-blue-500 text-blue-500 font-semibold py-2 rounded-lg hover:bg-blue-50 transition">
+                        {% trans "Mail me a sign-in code" %}
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Social Sign In -->
+        {% if SOCIALACCOUNT_ENABLED %}
+            <hr class="my-6">
+            <div class="text-center">
+                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_body %}
+    {{ block.super }}
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+    {% endif %}
+{% endblock %}

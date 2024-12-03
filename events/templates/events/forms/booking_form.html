@@ -1,0 +1,18 @@
+{% extends "layouts/_base.html" %}
+{% load tailwind_filters %}
+
+{% block content %}
+
+<div class="flex h-screen mt-1 justify-center lg:px-8">
+    <div class="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Book Your Spot</h2>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                Book Ticket
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

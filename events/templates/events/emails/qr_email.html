@@ -1,0 +1,20 @@
+{% load static %}
+
+<div style="font-family: Arial, sans-serif; color: #333; text-align: center; padding: 20px;">
+    <h1 style="color: #0056b3;">Your Event QR Code</h1>
+    <p style="font-size: 16px;">
+        Thank you for registering for the event <strong>{{ event.name }}</strong>! Below is your unique QR code.
+        Please present this code at the event for seamless check-in.
+    </p>
+    <div style="margin: 20px auto; text-align: center;">
+        <img src="cid:qr_code" alt="Your QR Code" style="width: 200px; height: 200px;" />
+    </div>
+    <p style="font-size: 14px; color: #555;">
+        If you have any questions, feel free to contact us at email@example.com
+        <a href="mailto:support@yourdomain.com" style="color: #0056b3; text-decoration: none;">support@yourdomain.com</a>.
+    </p>
+    <div>
+        <p>Powered by</p>
+        <img src="cid:logo" alt="ticketize logo" style="width: 100px; height: 50px;">
+    </div>
+</div>

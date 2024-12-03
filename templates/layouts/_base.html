@@ -1,0 +1,87 @@
+{% load static tailwind_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Django Tailwind</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        {% tailwind_css %}
+        <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/html5-qrcode" type="text/javascript">
+        <script src="{% static 'js/main.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    </head>
+
+    <body class="bg-slate-50">
+        <style>
+            /* CSS for showing the message */
+            #message-container.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        </style>
+
+        <!-- Messages -->
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="flex justify-center">
+                    <div id="message-container" class="fixed bottom-0 w-full sm:w-1/4 z-50 bg-green-100 border border-green-400 text-green-700 px-3 py-4 rounded-t-xl transform translate-y-full opacity-0 transition-transform duration-300 ease-in-out" role="alert">
+                        <strong class="font-bold">Success!</strong>
+                        <span class="block sm:inline">{{ message }}</span>
+                        <button onclick="closeMessage()" class="absolute top-1 right-2 text-green-700 hover:text-green-900">
+                            &times;
+                        </button>
+                    </div>
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="flex justify-center">
+                    <div id="message-container" class="fixed bottom-0 w-full sm:w-1/4 z-50 bg-red-100 border border-red-400 text-red-700 px-3 py-4 rounded-t-xl transform translate-y-full opacity-0 transition-transform duration-300 ease-in-out" role="alert">
+                        <strong class="font-bold">Error!</strong>
+                        <span class="block sm:inline">{{ message }}</span>
+                        <button onclick="closeMessage()" class="absolute top-1 right-2 text-red-700 hover:text-red-900">
+                            &times;
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if request.path != '/accounts/login/' and request.path != '/accounts/signup/' %}
+            <!-- Navbar -->
+            {% include "includes/navbar.html" %}
+        {% endif %}
+
+        {% block content %}
+        
+        {% endblock content %}
+
+        <script>
+            // JavaScript to display the message and handle dismissal
+            document.addEventListener("DOMContentLoaded", function () {
+                const messageContainer = document.getElementById("message-container");
+                if (messageContainer) {
+                    // Show the message with animation
+                    setTimeout(() => {
+                        messageContainer.classList.add("show");
+                    }, 100); // Delay to allow CSS transition
+
+                    // Auto-hide the message after 5 seconds
+                    setTimeout(() => {
+                        messageContainer.classList.remove("show");
+                    }, 5000);
+                }
+            });
+
+            function closeMessage() {
+                const messageContainer = document.getElementById("message-container");
+                if (messageContainer) {
+                    messageContainer.classList.remove("show");
+                }
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    </body>
+</html>
