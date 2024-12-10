@@ -11,6 +11,7 @@ class EventForm(forms.ModelForm):
             "organizer",
             "link",
             "checked_in_count",
+            "staff",
         )
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
@@ -30,3 +31,14 @@ class BookingForm(forms.ModelForm):
         widgets = {
             "email": forms.EmailInput(attrs={"type": "email"}),
         }
+
+
+class AddStaffForm(forms.ModelForm):
+    """"""
+
+    name = forms.CharField(label="Name")
+    email = forms.EmailField(label="Email")
+
+    class Meta:
+        model = Event
+        fields = ("name", "email")

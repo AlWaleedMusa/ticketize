@@ -157,6 +157,45 @@ def book_event(request, event_id):
     return render(request, "events/forms/booking_form.html", context)
 
 
+@roles_required(["organizer"])
+def add_staff(request, event_id):
+    """"""
+
+    event = Event.objects.filter(organizer=request.user, event_id=event_id).first()
+
+    if not event:
+        return render(request, "events/forbidden.html")
+
+    if request.method == "POST":
+        form = AddStaffForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            email = form.cleaned_data["email"]
+
+            try:
+                random_password = uuid.uuid4().hex[:10]
+                print(random_password)
+                user = CustomUser.objects.create(
+                    email=email,
+                    username=name,
+                    role=CustomUser.Role.CHECKIN_STAFF,
+                    organizer=request.user,
+                )
+                user.set_password(random_password)
+                user.save()
+                event.staff.add(user)
+                email_staff_password(email, random_password)
+                messages.success(request, f"{name} added as staff")
+                return redirect("home")
+            except IntegrityError:
+                messages.error(request, f"{email} already is a Staff")
+                return redirect("home")
+    else:
+        form = AddStaffForm()
+
+    return render(request, "events/forms/add_staff_form.html", {"form": form})
+
+
 def confirm_email(request):
     token_param = request.GET.get("token")
 

@@ -175,3 +175,14 @@ def send_confirmation_email(request, email, generated_token):
         settings.EMAIL_HOST_USER,
         [email],
     )
+
+
+def email_staff_password(email, random_password):
+    """"""
+
+    send_mail(
+        "Staff Password",
+        f"Your password is: {random_password}",
+        settings.EMAIL_HOST_USER,
+        [email],
+    )
