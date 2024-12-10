@@ -34,16 +34,16 @@ class Event(models.Model):
         on_delete=models.CASCADE,
         related_name="organized_events",
     )
-    staff = models.ManyToManyField(CustomUser, related_name="staffed_events", blank=True)
+    staff = models.ManyToManyField(
+        CustomUser, related_name="staffed_events", blank=True
+    )
     name = models.CharField(_("Event name"), max_length=250)
     description = models.TextField(_("Event Description"))
-    date = models.DateField(_("Date"), auto_now_add=False)
-    image_url = models.ImageField(_("Event Image"), upload_to="event_images/")
-    start_time = models.TimeField(
-        _("Starting Time"), auto_now=False, auto_now_add=False
-    )
+    date = models.DateField(_("Date"), auto_now_add=False, default=now)
+    start_time = models.TimeField(_("Starting Time"), auto_now_add=False, default="00:00")
+    image_url = models.ImageField(_("Event Image"), upload_to="event_images/", default="event_images/default.png", blank=True)
     available_tickets = models.PositiveIntegerField(_("Available Tickets"))
-    location = models.CharField(_("Avenue"), max_length=250)
+    location = models.CharField(_("Location"), max_length=250)
     link = models.URLField(max_length=500)
     confirmed_tickets = models.PositiveIntegerField(_("Confirmed Tickets"), default=0)
     checked_in_count = models.PositiveIntegerField(_("Checked-In Count"), default=0)

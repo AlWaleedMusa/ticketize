@@ -12,10 +12,13 @@
         <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript">
         <script src="{% static 'js/main.js' %}"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     </head>
 
-    <body class="bg-slate-50">
+    <body class="bg-slate-50" style="font-family: Roboto">
         <style>
             /* CSS for showing the message */
             #message-container.show {

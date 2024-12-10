@@ -11,7 +11,7 @@
     {% endif %}
 
     <div class="p-4 flex justify-center">
-        <div class="max-w-2xl p-6 bg-white rounded-lg shadow-md">
+        <div class="max-w-2xl md:w-1/2 p-6 bg-white rounded-lg shadow-md">
             {% if request.user == event.organizer %}
                 {% include "includes/dropdown.html"%}
             {% endif %}
@@ -41,7 +41,7 @@
             </div>
     
             <!-- Event Description -->
-            <div class="text-lg text-gray-600 mb-6">
+            <div class="text-gray-600 mb-6">
                 <strong class="text-gray-800">Description:</strong>
                 <p>
                     {{ event.description }}
@@ -49,7 +49,7 @@
             </div>
     
             <!-- Event Description -->
-            <div class="text-lg text-gray-600 mb-6">
+            <div class="text-gray-600 mb-6">
                 <strong class="text-gray-800">Location:</strong>
                 <p>
                     {{ event.location }}
@@ -58,15 +58,23 @@
     
             {% if request.user == event.organizer %}
                 <!-- Available Tickets -->
-                <div class="text-lg text-gray-600 mb-6">
+                <div class="text-gray-600 mb-6">
                     <strong class="text-gray-800">Available Tickets:</strong>
                     <p>
                         {{ event.available_tickets }}
                     </p>
                 </div>
+
+                <!-- Confirmed Tickets -->
+                <div class="text-gray-600 mb-6">
+                    <strong class="text-gray-800">Confirmed Tickets:</strong>
+                    <p>
+                        {{ event.confirmed_tickets }}
+                    </p>
+                </div>
             {% else %}
                 <!-- Organizer Information -->
-                <div class="text-lg text-gray-600 mb-6">
+                <div class="text-gray-600 mb-6">
                     <strong class="text-gray-800">Organizer:</strong>
                     <span class="text-blue-600">{{ event.organizer.username }}</span>
                 </div>

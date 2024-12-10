@@ -15,6 +15,7 @@ class EventForm(forms.ModelForm):
             "link",
             "checked_in_count",
             "staff",
+            "confirmed_tickets",
         )
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
@@ -47,7 +48,7 @@ class EventForm(forms.ModelForm):
                 Submit(
                     "submit",
                     "Create Event",
-                    css_class="w-full sm:w-1/4 text-white bg-[#FFA300] border focus:outline-none font-medium rounded-lg text-sm px-8 py-3 cursor-pointer",
+                    css_class="w-full sm:w-1/4 text-white bg-[#FFA300] border focus:outline-none font-medium rounded-lg text-sm px-4 py-3 cursor-pointer",
                 ),
                 css_class="flex justify-start"
             )
