@@ -1,9 +1,12 @@
 from django import forms
 
 from .models import Event, Booking
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column, Submit, Div
 
 
 class EventForm(forms.ModelForm):
+    """"""
 
     class Meta:
         model = Event
@@ -20,7 +23,35 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["image_url"].widget.attrs.update({"class": "px-4"})
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column("name", css_class="w-full p-1"),
+            ),
+            Row(
+                Column("description", css_class="w-full sm:w-1/2 p-1"),
+            ),
+            Row(
+                Column("date", css_class="w-full sm:w-1/3 p-1"),
+                Column("start_time", css_class="w-full sm:w-1/3 p-1"),
+            ),
+            Row(
+                Column("image_url", css_class="w-full sm:w-1/2 px-2"),
+            ),
+            Row(
+                Column("location", css_class="w-full sm:w-1/2 p-1"),
+                Column("available_tickets", css_class="w-1/4 p-1"),
+            ),
+            Div(
+                Submit(
+                    "submit",
+                    "Create Event",
+                    css_class="w-full sm:w-1/4 text-white bg-[#FFA300] border focus:outline-none font-medium rounded-lg text-sm px-8 py-3 cursor-pointer",
+                ),
+                css_class="flex justify-start"
+            )
+        )
 
 
 class BookingForm(forms.ModelForm):
