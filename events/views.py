@@ -8,6 +8,9 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.db import IntegrityError
 from django.db.models import Q
+from django.db import transaction
+from django.db.models import F
+
 
 
 from .models import Event, CustomUser, Ticket, ConfirmationToken, Booking
@@ -208,6 +211,10 @@ def confirm_email(request):
             # generate a ticket
             save_ticket(booking_id, event)
             generate_send_qr(booking_id, email, event)
+
+            with transaction.atomic():
+                event.confirmed_tickets = F("confirmed_tickets") + 1
+                event.save(update_fields=["confirmed_tickets"])
 
             return render(request, "events/booking_step_two.html")
         except Exception as e:

@@ -30,23 +30,11 @@
                         <strong class="text-gray-800">Event: </strong>
                         <span class="text-gray-600">{{ event.name }}</span>
                     </div>
-                    <div>
-                        <strong class="text-gray-800">Date: </strong>
-                        <span class="text-gray-600">{{ event.date|date:"F j Y" }}</span>
-                    </div>
-                    <div>
-                        <strong class="text-gray-800">Description: </strong>
-                        <p class="text-gray-600">{{ event.description }}</p>
-                    </div>
-                    <div>
-                        <strong class="text-gray-800">Location: </strong>
-                        <span class="text-gray-600">{{ event.location }}</span>
-                    </div>
 
                     <!-- Booking Link and Copy Button -->
                     <div>
                         <div class="mb-3 sm:mb-0">
-                            <strong class="text-gray-800">Book: </strong>
+                            <strong class="text-gray-800">Tickets: </strong>
                         </div>
                         <div class="flex-grow">
                             <p id="copyText{{ event.event_id }}" class="text-gray-600 break-words block sm:inline-block">

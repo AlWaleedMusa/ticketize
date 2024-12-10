@@ -45,6 +45,7 @@ class Event(models.Model):
     available_tickets = models.PositiveIntegerField(_("Available Tickets"))
     location = models.CharField(_("Avenue"), max_length=250)
     link = models.URLField(max_length=500)
+    confirmed_tickets = models.PositiveIntegerField(_("Confirmed Tickets"), default=0)
     checked_in_count = models.PositiveIntegerField(_("Checked-In Count"), default=0)
     created_at = models.DateField(auto_now=True)
 

@@ -29,9 +29,15 @@
             <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ event.name }}</h1>
     
             <!-- Event Date -->
-            <div class="text-lg text-gray-600 mb-4">
-                <strong class="text-gray-800">Date:</strong>
-                {{ event.date|date:"F j Y" }}
+            <div class="flex justify-between mb-4">
+                <div>
+                    <strong class="text-gray-800">Date: </strong>
+                    <span class="text-gray-600">{{ event.date|date:"F j Y" }}</span>
+                </div>
+                <div>
+                    <strong class="text-gray-800">Time: </strong>
+                    <span class="text-gray-600">{{ event.start_time }}</span>
+                </div>
             </div>
     
             <!-- Event Description -->
