@@ -21,9 +21,19 @@ from .services import (
 )
 
 
+@roles_required(["organizer", "checkin-staff"])
 def home(request):
     """"""
-    # events = Event.objects.filter(organizer=request.user)
+
+    if request.user.role == CustomUser.Role.CHECKIN_STAFF:
+        events = (
+            Event.objects.prefetch_related("staff")
+            .filter(staff=request.user)
+            .order_by("date")
+        )
+        context = {"events": events}
+        return render(request, "events/checkin_staff_home.html", context)
+
     events = (
         Event.objects.prefetch_related("organizer")
         .filter(organizer=request.user)
@@ -34,6 +44,7 @@ def home(request):
     return render(request, "events/home.html", context)
 
 
+@roles_required(["organizer"])
 def add_event(request):
     """"""
     if request.method == "POST":
@@ -65,6 +76,7 @@ def event_detail(request, pk):
     return render(request, "events/event_detail.html", {"event": event})
 
 
+@roles_required(["organizer"])
 def delete_event(request, pk):
     event = get_object_or_404(Event, event_id=pk)
 
@@ -185,10 +197,12 @@ def confirm_email(request):
         return HttpResponse("Already confirmed")
 
 
+@roles_required(["organizer", "checkin-staff"])
 def qr_code_scanner(request, event_id):
     return render(request, "events/scanner.html", {"event_id": event_id})
 
 
+@roles_required(["organizer", "checkin-staff"])
 def process_qr_code(request):
     if request.method == "POST":
         data = json.loads(request.body)

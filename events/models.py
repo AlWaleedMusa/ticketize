@@ -8,7 +8,19 @@ from django.utils.timezone import timedelta, now
 class CustomUser(AbstractUser):
     """"""
 
-    pass
+    class Role(models.TextChoices):
+        ORGANIZER = "organizer", _("Organizer")
+        CHECKIN_STAFF = "checkin-staff", _("Check-in Staff")
+
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.ORGANIZER)
+    organizer = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="staff",
+        verbose_name=_("Organizer"),
+    )
 
 
 class Event(models.Model):
@@ -18,6 +30,7 @@ class Event(models.Model):
     organizer = models.ForeignKey(
         CustomUser, verbose_name=_("Organizer"), on_delete=models.CASCADE, related_name="organized_events"
     )
+    staff = models.ManyToManyField(CustomUser, related_name="staffed_events", blank=True)
     name = models.CharField(_("Event name"), max_length=250)
     description = models.TextField(_("Event Description"))
     date = models.DateField(_("Date"), auto_now_add=False)
