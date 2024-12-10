@@ -7,10 +7,12 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.db import IntegrityError
+from django.db.models import Q
 
 
 from .models import Event, CustomUser, Ticket, ConfirmationToken, Booking
-from .forms import EventForm, BookingForm
+from .forms import EventForm, BookingForm, AddStaffForm
+from .permissions import roles_required
 from .services import (
     process_booking,
     save_ticket,
@@ -18,6 +20,7 @@ from .services import (
     send_confirmation_email,
     resize_image,
     generate_send_qr,
+    email_staff_password,
 )
 
 
@@ -47,6 +50,7 @@ def home(request):
 @roles_required(["organizer"])
 def add_event(request):
     """"""
+
     if request.method == "POST":
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
@@ -72,51 +76,30 @@ def add_event(request):
 
 
 def event_detail(request, pk):
+    """"""
+
     event = get_object_or_404(Event.objects.prefetch_related("organizer"), event_id=pk)
     return render(request, "events/event_detail.html", {"event": event})
 
 
 @roles_required(["organizer"])
 def delete_event(request, pk):
-    event = get_object_or_404(Event, event_id=pk)
+    """"""
 
-    if request.method == "POST":
-        event.delete()
-        return redirect("home")
+    event = Event.objects.filter(organizer=request.user, event_id=pk).first()
 
-    context = {"event": event}
-
-    return render(request, "includes/confirm_delete.html", context)
-
-
-# def book_event(request, event_id):
-#     event = get_object_or_404(Event, event_id=event_id)
-
-#     if request.method == "POST":
-#         form = BookingForm(request.POST)
-#         if form.is_valid():
-#             try:
-#                 confirmation_id = book_event(event, form)
-#                 messages.success(
-#                     request,
-#                     "Booking successful! Confirmation ID: {}".format(confirmation_id),
-#                 )
-#                 # TO DO
-#                 # generate a ticket
-#                 save_ticket(confirmation_id, event)
-#                 return redirect("home")
-#             except ValueError as e:
-#                 messages.error(request, str(e))
-#                 print("no tickets")
-#                 return redirect("home")
-#     else:
-#         form = BookingForm()
-
-#     context = {"form": form}
-#     return render(request, "events/forms/booking_form.html", context)
+    if event:
+        if request.method == "POST":
+            event.delete()
+            return redirect("home")
+        return render(request, "includes/confirm_delete.html", {"event": event})
+    else:
+        return render(request, "events/forbidden.html")
 
 
 def book_event(request, event_id):
+    """"""
+
     event = get_object_or_404(Event, event_id=event_id)
 
     if request.method == "POST":
@@ -127,8 +110,8 @@ def book_event(request, event_id):
 
             # Check if the user already has a booking for this event
             if Booking.objects.filter(event=event, email=email).exists():
-                messages.error(request, "You have already booked for this event")
-                return redirect("home")
+                messages.error(request, "You have already booked for this event.")
+                return redirect("event_detail", pk=event_id)
 
             try:
                 # Create a new booking
@@ -136,19 +119,19 @@ def book_event(request, event_id):
 
                 # Generate token for confirmation
                 generated_token = uuid.uuid4()
-                ConfirmationToken.objects.create(token=generated_token, event=event, email=email)
+                ConfirmationToken.objects.create(
+                    token=generated_token, event=event, email=email
+                )
 
                 # Send confirmation email
                 send_confirmation_email(request, email, generated_token)
 
-                # Success message
-                messages.success(request, "Please check your email to confirm your booking")
-                return redirect("home")
+                return render(request, "events/booking_step_one.html", {"event": event})
 
             except Exception as e:
                 # Handle any unforeseen exceptions
                 messages.error(request, f"An error occurred: {str(e)}")
-                return redirect("home")
+                return redirect("event_detail", pk=event_id)
 
     else:
         form = BookingForm()
@@ -197,6 +180,8 @@ def add_staff(request, event_id):
 
 
 def confirm_email(request):
+    """"""
+
     token_param = request.GET.get("token")
 
     try:
@@ -219,30 +204,37 @@ def confirm_email(request):
 
         try:
             booking_id = process_booking(event)
-            messages.success(
-                request,
-                "Booking successful! Check your email for the ticket",
-            )
 
-            # TO DO
             # generate a ticket
             save_ticket(booking_id, event)
             generate_send_qr(booking_id, email, event)
-            return redirect("home")
+
+            return render(request, "events/booking_step_two.html")
         except Exception as e:
             return HttpResponse(str(e))
 
     else:
-        return HttpResponse("Already confirmed")
+        return render(request, "events/already_confirmed.html")
 
 
 @roles_required(["organizer", "checkin-staff"])
 def qr_code_scanner(request, event_id):
+    """"""
+
+    event = Event.objects.filter(
+        Q(organizer=request.user) | Q(staff=request.user), event_id=event_id
+    ).first()
+
+    if not event:
+        return render(request, "events/forbidden.html")
+
     return render(request, "events/scanner.html", {"event_id": event_id})
 
 
 @roles_required(["organizer", "checkin-staff"])
 def process_qr_code(request):
+    """"""
+
     if request.method == "POST":
         data = json.loads(request.body)
         qr_code_data = data.get("qr_code", "")
@@ -257,12 +249,9 @@ def process_qr_code(request):
                 )
         except Exception:
             messages.error(request, "Access denied")
-            return JsonResponse({"redirect_url": reverse("scan_qr", kwargs={"event_id": event_id}), "status": "error"})
-
-
-def entry_granted(request):
-    return render(request, "events/entry_granted.html")
-
-
-def entry_denied(request):
-    return render(request, "events/entry_denied.html")
+            return JsonResponse(
+                {
+                    "redirect_url": reverse("scan_qr", kwargs={"event_id": event_id}),
+                    "status": "error",
+                }
+            )

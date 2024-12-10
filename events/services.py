@@ -53,11 +53,11 @@ def generate_send_qr(booking_id, email, event):
         logo_data = logo_file.read()
 
     # Email content
-    subject = f"QR Code for Your Event {event.name}"
+    subject = f"Your QR Ticket for the Event '{event.name}'"
     from_email = settings.EMAIL_HOST_USER
     to_email = [email]
     html_content = render_to_string("events/emails/qr_email.html", {"event": event})
-    plain_text_content = f"Your Event QR Code\n\nThank you for registering for the event {event.name}! Please find your QR code attached. Present this code at the event for check-in.\n\nIf you have any questions, contact us at example.com"
+    plain_text_content = f"Your QR Ticket\n\nThank you for registering for the event {event.name}! Please find your QR code attached. Present this code at the event for check-in.\n\nIf you have any questions, contact us at example.com"
 
     # Create the email
     email_obj = EmailMultiAlternatives(
@@ -82,40 +82,10 @@ def generate_send_qr(booking_id, email, event):
 
     buffer.close()
 
-    # subject = "QR Code for Your Event"
-    # from_email = settings.EMAIL_HOST_USER
-    # to_email = [email]
-    # html_content = """
-        
-    # """
-    # plain_text_content = """
-    #     Your Event QR Code
-
-    #     Thank you for registering for the event! Please find your QR code attached. 
-    #     Present this code at the event for check-in.
-
-    #     If you have any questions, contact us at support@yourdomain.com.
-    # """
-
-    # # Create the email
-    # email_obj = EmailMultiAlternatives(
-    #     subject, plain_text_content, from_email, to_email
-    # )
-    # email_obj.attach_alternative(html_content, "text/html")
-
-    # # Attach the QR code as an inline image
-    # qr_image = MIMEImage(buffer.read(), _subtype="png")
-    # qr_image.add_header("Content-ID", "<qr_code>")
-    # qr_image.add_header("Content-Disposition", "inline", filename="qr_code.png")
-    # email_obj.attach(qr_image)
-
-    # # Send the email
-    # email_obj.send()
-    # buffer.close()
-
 
 def process_booking(event):
     """ """
+
     with transaction.atomic():
         if event.is_sold_out:
             raise ValueError("No tickets available for this event.")
@@ -140,6 +110,8 @@ def save_ticket(booking_id, event):
 
 
 def validate_ticket(qr_code_data, event_id):
+    """"""
+
     try:
         uuid.UUID(qr_code_data)
 
@@ -167,10 +139,12 @@ def validate_ticket(qr_code_data, event_id):
 
 
 def send_confirmation_email(request, email, generated_token):
+    """"""
+
     confirmation_link = request.build_absolute_uri(f"/confirm/?token={generated_token}")
 
     send_mail(
-        "confirm booking",
+        "Confirm booking",
         f"Please click on the link to confirm your booking: {confirmation_link}",
         settings.EMAIL_HOST_USER,
         [email],

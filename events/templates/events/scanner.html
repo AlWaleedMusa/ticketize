@@ -1,6 +1,13 @@
 {% extends "layouts/_base.html" %}
 
 {% block content %}
+
+{% if request.user.role == "checkin-staff" %}
+    {% include "includes/staff_navbar.html" %}
+{% else %}
+    {% include "includes/navbar.html" %}
+{% endif %}
+
 <div class="min-h-screen flex flex-col justify-between bg-gray-50">
     <!-- Scanner Section -->
     <div class="flex flex-col items-center justify-center px-4 bg-white shadow-md rounded-lg max-w-xl mx-auto mt-2">

@@ -49,11 +49,6 @@
             {% endif %}
         {% endfor %}
 
-        {% if request.path != '/accounts/login/' and request.path != '/accounts/signup/' %}
-            <!-- Navbar -->
-            {% include "includes/navbar.html" %}
-        {% endif %}
-
         {% block content %}
         
         {% endblock content %}

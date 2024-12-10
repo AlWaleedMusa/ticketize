@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import timedelta, now
 
+
 class CustomUser(AbstractUser):
     """"""
 
@@ -24,11 +25,14 @@ class CustomUser(AbstractUser):
 
 
 class Event(models.Model):
-    """ """
+    """"""
 
     event_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     organizer = models.ForeignKey(
-        CustomUser, verbose_name=_("Organizer"), on_delete=models.CASCADE, related_name="organized_events"
+        CustomUser,
+        verbose_name=_("Organizer"),
+        on_delete=models.CASCADE,
+        related_name="organized_events",
     )
     staff = models.ManyToManyField(CustomUser, related_name="staffed_events", blank=True)
     name = models.CharField(_("Event name"), max_length=250)
@@ -45,7 +49,7 @@ class Event(models.Model):
     created_at = models.DateField(auto_now=True)
 
     def __str__(self):
-        return f"Event {self.name} Organized by {self.organizer.username}"
+        return f"{self.name}"
 
     @property
     def is_sold_out(self):
@@ -71,7 +75,6 @@ class Booking(models.Model):
             models.UniqueConstraint(fields=["email", "event"], name="unique_booking")
         ]
 
-
     def __str__(self):
         return f"{self.name} just booked a ticket to {self.event.name}"
 
@@ -88,7 +91,10 @@ class Ticket(models.Model):
     def __str__(self):
         return f"booking_id: {self.booking_id} / Event: {self.event.name}"
 
+
 class ConfirmationToken(models.Model):
+    """"""
+
     token = models.UUIDField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     email = models.EmailField()

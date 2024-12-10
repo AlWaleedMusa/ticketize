@@ -6,6 +6,13 @@
 {% endblock head_title %}
 
 {% block content %}
+
+{% if request.user.role == "checkin-staff" %}
+    {% include "includes/staff_navbar.html" %}
+{% else %}
+    {% include "includes/navbar.html" %}
+{% endif %}
+
 <div class="min-h-screen flex justify-center bg-slate-50 sm:px-6 lg:px-8">
     <div class="w-full max-w-sm p-6 sm:p-8">
         <!-- Title -->
