@@ -53,6 +53,11 @@ class Event(models.Model):
 
         return self.available_tickets <= 0
 
+    @property
+    def is_over(self):
+        """"""
+        return self.date < now().date()
+
 
 class Booking(models.Model):
     """"""
