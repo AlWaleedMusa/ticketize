@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 
 from .models import Event, Booking
@@ -18,7 +20,7 @@ class EventForm(forms.ModelForm):
             "confirmed_tickets",
         )
         widgets = {
-            "date": forms.DateInput(attrs={"type": "date"}),
+            "date": forms.DateInput(attrs={"type": "date", "min": date.today()}),
             "start_time": forms.TimeInput(attrs={"type": "time"}),
         }
 
@@ -50,8 +52,8 @@ class EventForm(forms.ModelForm):
                     "Create Event",
                     css_class="w-full sm:w-1/4 text-white bg-[#FFA300] border focus:outline-none font-medium rounded-lg text-sm px-4 py-3 cursor-pointer",
                 ),
-                css_class="flex justify-start"
-            )
+                css_class="flex justify-start",
+            ),
         )
 
 
