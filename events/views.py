@@ -49,6 +49,10 @@ def home(request):
     context = {"events": events}
     return render(request, "events/home.html", context)
 
+def about(request):
+    """"""
+
+    return render(request, "events/about.html")
 
 @roles_required(["organizer"])
 def add_event(request):
@@ -198,8 +202,8 @@ def confirm_email(request):
     email = token.email
 
     if token.is_expired():
-        print("This token is expired")
-        return
+        messages.error(request, "This token is expired")
+        return redirect("home")
 
     if not token.is_confirmed:
         token.is_confirmed = True

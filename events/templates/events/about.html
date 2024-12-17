@@ -1,0 +1,26 @@
+{% extends "layouts/_base.html" %}
+
+{% block content %}
+
+{% if request.user.role == "organizer" %}
+    {% include "includes/navbar.html" %}
+{% elif request.user.role == "checkin-staff" %}
+    {% include "includes/staff_navbar.html" %}
+{% else %}
+    {% include "includes/booking_navbar.html" %}
+{% endif %}
+    
+    <div class="max-w-2xl mx-auto mt-20 p-6 text-center">
+        <h1 class="text-3xl font-bold text-center mb-6">About <span class="text-blue-600">ticketize</span></h1>
+        <p class="text-gray-700 leading-relaxed mb-4">
+            Welcome to <strong class="text-blue-600">ticketize</strong>, the ultimate platform for seamless event management and ticketing. 
+            Our mission is to empower event organizers and attendees by simplifying the way events are planned, managed, and experienced. 
+            Whether you're hosting a small gathering, a large conference, or a music festival, ticketize provides you with the tools you need to succeed.
+        </p>
+        <p class="text-gray-700 mt-6">
+            At <strong class="text-blue-600">ticketize</strong>, we believe in making event management smarter, faster, and more enjoyable for everyone involved. 
+            Join us and redefine how events are organized and attended.
+        </p>
+    </div>
+
+{% endblock content %}
