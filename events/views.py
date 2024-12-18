@@ -26,6 +26,13 @@ from .services import (
     email_staff_password,
 )
 
+def landing(request):
+    """"""
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    return render(request, "events/landing.html")
+
 
 @roles_required(["organizer", "checkin-staff"])
 def home(request):

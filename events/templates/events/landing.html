@@ -1,0 +1,178 @@
+{% extends "layouts/_base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+        /* Custom Color Variables */
+        :root {
+            --main-color: #FFA300;
+            --dark-gray: #333333;
+            --light-gray: #f5f5f5;
+        }
+    </style>
+
+    <header class="bg-gray-100 border-b border-gray-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="{% url 'landing' %}" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <img src="{% static 'images/logo.png' %}" class="h-8" alt="ticketize logo" />
+            </a>
+    
+            <!-- Hamburger Button (Visible on mobile only) -->
+            <button
+                id="menu-btn"
+                class="block md:hidden text-gray-700 focus:outline-none"
+                aria-label="Toggle Navigation"
+            >
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+                </svg>
+            </button>
+    
+            <!-- Navigation Menu -->
+            <nav
+                id="menu"
+                class="fixed top-0 md:mt-0 mt-12 right-0 h-auto w-full bg-gray-100 shadow-lg transform translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex md:w-auto md:space-x-6 md:bg-transparent md:shadow-none"
+            >
+                <ul class="flex flex-col space-y-4 p-6 md:flex-row md:space-y-0 md:space-x-6">
+                    <li>
+                        <a href="#features" class="block text-gray-700 hover:text-[var(--main-color)] py-2">Features</a>
+                    </li>
+                    <li>
+                        <a href="#about" class="block text-gray-700 hover:text-[var(--main-color)] py-2">About</a>
+                    </li>
+                    <li>
+                        <a href="#contact" class="block text-gray-700 hover:text-[var(--main-color)] py-2">Contact</a>
+                    </li>
+                    <li>
+                        <a href="{% url "account_signup" %}" class="block text-white bg-[var(--main-color)] px-4 py-2 rounded hover:bg-orange-500 md:py-2 md:px-4">
+                            Get Started
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="bg-[var(--main-color)] text-white py-16">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
+            <div class="md:w-1/2 text-center md:text-left">
+                <h1 class="text-6xl font-bold">Simplify Your Event Management</h1>
+                <p class="mt-4 text-lg">
+                    With Ticketize, you can create, manage, and optimize events in just a few clicks.
+                </p>
+                <div class="mt-6">
+                    <a href="{% url "account_signup" %}" class="bg-white text-[var(--main-color)] px-6 py-3 rounded shadow hover:bg-gray-100">
+                        Get Started Now
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 md:mt-0 md:w-3/12">
+                <img src="{% static "images/landing-hero.png" %}" alt="Event Management">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-[var(--light-gray)]">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-gray-800">Features That Make Event Management Easy</h2>
+            <p class="mt-4 text-gray-600">Everything you need, all in one place.</p>
+            <div class="mt-12 grid gap-8 md:grid-cols-3">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <img src="{% static "images/book.png" %}" alt="Ticketing" class="mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--main-color)]">Smart Ticketing</h3>
+                    <p class="text-gray-600 mt-2">Book tickets online with ease and track them in real time.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <img src="{% static "images/qr-scan.png" %}" alt="QR Scanning" class="mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--main-color)]">QR Code Check-ins</h3>
+                    <p class="text-gray-600 mt-2">Use QR codes for fast and secure attendee check-ins.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <img src="{% static "images/analytics.png" %}" alt="Analytics" class="mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-[var(--main-color)]">Event Analytics</h3>
+                    <p class="text-gray-600 mt-2">Get insights into ticket sales, attendance, and more.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16">
+        <div class="container mx-auto space-x-0 md:space-x-10 p-8 flex flex-col-reverse md:flex-row items-center">
+            <div class="md:w-1/2 md:mt-0 mt-6">
+                <img src="{% static "images/about.png" %}" alt="About Us">
+            </div>
+            <div class="md:w-1/2 text-center md:text-left">
+                <h2 class="text-4xl font-bold text-gray-800">About Ticketize</h2>
+                <p class="mt-4 text-gray-600">
+                    Ticketize is the ultimate platform for seamless event management and ticketing. 
+                    Our mission is to empower event organizers and attendees by simplifying the way events are planned, managed, and experienced. 
+                    Whether you're hosting a small gathering, a large conference, or a music festival, ticketize provides you with the tools you need to succeed.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-[var(--light-gray)]">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-gray-800">Get in Touch</h2>
+            <p class="mt-4 text-gray-600">Have questions? We'd love to hear from you.</p>
+            <form class="mt-8 max-w-lg mx-auto">
+                <input type="text" placeholder="Your Name" class="w-full p-3 rounded border border-gray-300 focus:outline-none focus:border-[var(--main-color)] mb-4">
+                <input type="email" placeholder="Your Email" class="w-full p-3 rounded border border-gray-300 focus:outline-none focus:border-[var(--main-color)] mb-4">
+                <textarea placeholder="Your Message" class="w-full p-3 rounded border border-gray-300 focus:outline-none focus:border-[var(--main-color)] mb-4"></textarea>
+                <button type="submit" class="w-full bg-[var(--main-color)] text-white py-3 rounded hover:bg-orange-500">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 Ticketize. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+        
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const menuBtn = document.getElementById("menu-btn");
+            const menu = document.getElementById("menu");
+            const links = menu.querySelectorAll("a");
+    
+            // Function to close the menu
+            const closeMenu = () => {
+                menu.classList.add("translate-x-full");
+            };
+    
+            // Toggle menu on button click
+            menuBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                menu.classList.toggle("translate-x-full");
+            });
+    
+            // Close menu when clicking outside
+            document.addEventListener("click", (e) => {
+                if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+                    closeMenu();
+                }
+            });
+    
+            // Close menu when clicking on a link
+            links.forEach((link) => {
+                link.addEventListener("click", () => {
+                    closeMenu();
+                });
+            });
+        });
+    </script>
+
+{% endblock content %}
