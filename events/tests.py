@@ -5,6 +5,7 @@ import json
 from django.test import TestCase, Client
 from django.core import mail
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from events.models import Event, CustomUser, Booking, ConfirmationToken, Ticket
 
@@ -66,6 +67,7 @@ class EventTestCase(TestCase):
         self.assertEqual(event.name, "Test Event 1")
         self.assertEqual(event.organizer, self.user)
         self.assertIsNotNone(event.link)
+        self.assertIsNotNone(event.image_url)
 
     def test_delete_event(self):
         # Test event deletion
@@ -134,3 +136,5 @@ class EventTestCase(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(Ticket.objects.first().is_checked_in, True)
+        self.event.refresh_from_db()
+        self.assertEqual(self.event.checked_in_count, 1)
