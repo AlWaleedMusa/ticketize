@@ -168,7 +168,7 @@ ACCOUNT_EMAIL_REQUIRED = True            # Email is mandatory
 ACCOUNT_EMAIL_VERIFICATION = True
 LOGIN_REDIRECT_URL = "home"
 LOGIN_URL = "/accounts/login/"
-LOGOUT_REDIRECT_URL = "/accounts/login/"
+LOGOUT_REDIRECT_URL = "/"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
