@@ -31,7 +31,7 @@ def landing(request):
     if request.user.is_authenticated:
         return redirect("home")
 
-    return render(request, "events/landing.html")
+    return render(request, "landing.html")
 
 
 @roles_required(["organizer", "checkin-staff"])
@@ -171,8 +171,7 @@ def add_staff(request, event_id):
 
             try:
                 random_password = uuid.uuid4().hex[:10]
-                print(random_password)
-                user = CustomUser.objects.create(
+                user = CustomUser.objects.create_user(
                     email=email,
                     username=name,
                     role=CustomUser.Role.CHECKIN_STAFF,
