@@ -124,7 +124,7 @@ def book_event(request, event_id):
 
             # Check if the user already has a booking for this event
             if Booking.objects.filter(event=event, email=email).exists():
-                messages.error(request, "You have already booked for this event.")
+                messages.error(request, "You are already booked for this event.")
                 return redirect("event_detail", pk=event_id)
 
             try:
@@ -182,10 +182,10 @@ def add_staff(request, event_id):
                 user.save()
                 event.staff.add(user)
                 email_staff_password(email, random_password)
-                messages.success(request, f"{name} added as staff")
+                messages.success(request, f"{name} added as a Staff")
                 return redirect("home")
             except IntegrityError:
-                messages.error(request, f"{email} already is a Staff")
+                messages.error(request, f"{name} already is a Staff")
                 return redirect("home")
     else:
         form = AddStaffForm()
@@ -265,8 +265,8 @@ def process_qr_code(request):
                 return JsonResponse(
                     {"redirect_url": reverse("scan_qr"), "status": "success"}
                 )
-        except Exception:
-            messages.error(request, "Access denied")
+        except Exception as e:
+            messages.error(request, f"Access denied: {str(e)}")
             return JsonResponse(
                 {
                     "redirect_url": reverse("scan_qr", kwargs={"event_id": event_id}),
