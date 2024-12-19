@@ -119,7 +119,7 @@ def validate_ticket(qr_code_data, event_id):
             ticket = Ticket.objects.select_related("event").get(
                 booking_id=qr_code_data, event__event_id=event_id
             )
-            if ticket and ticket.is_checked_in:
+            if ticket.is_checked_in:
                 raise ValueError("This ticket has already been used for check-in.")
 
             ticket.is_checked_in = True  # Mark as checked in
@@ -130,12 +130,8 @@ def validate_ticket(qr_code_data, event_id):
             event.save(update_fields=["checked_in_count"])
 
         return ticket
-    except ValueError:
-        raise Http404("Invalid confirmation ID format.")
     except Ticket.DoesNotExist:
         raise Http404("Ticket with the provided confirmation ID does not exist.")
-    except Exception:
-        raise Http404("ticket might be used already")
 
 
 def send_confirmation_email(request, email, generated_token):
