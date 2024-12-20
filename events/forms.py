@@ -25,6 +25,7 @@ class EventForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
@@ -49,7 +50,11 @@ class EventForm(forms.ModelForm):
             Div(
                 Submit(
                     "submit",
-                    "Create Event",
+                    (
+                        "Create Event"
+                        if self.request.resolver_match.url_name == "add_event"
+                        else "Update Event"
+                    ),
                     css_class="w-full sm:w-1/4 text-white bg-[#FFA300] border focus:outline-none font-medium rounded-lg text-sm px-4 py-3 cursor-pointer",
                 ),
                 css_class="flex justify-start",

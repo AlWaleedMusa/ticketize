@@ -69,6 +69,24 @@ class EventTestCase(TestCase):
         self.assertIsNotNone(event.link)
         self.assertIsNotNone(event.image_url)
 
+    def test_edit_event(self):
+        # Test event edit
+        response = self.client.post(
+            reverse("edit_event", args=[self.event.event_id]),
+            data={
+                "name": "updated Test Event",
+                "description": self.event.description,
+                "date": self.event.date,
+                "start_time": self.event.start_time,
+                "location": self.event.location,
+                "available_tickets": self.event.available_tickets,
+            },
+        )
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.event.refresh_from_db()
+        self.assertEqual(self.event.name, "updated Test Event")
+        self.assertEqual(self.event.description, "Test Description")
+
     def test_delete_event(self):
         # Test event deletion
         self.assertEqual(Event.objects.count(), 1)

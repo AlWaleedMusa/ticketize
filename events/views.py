@@ -66,7 +66,7 @@ def add_event(request):
     """"""
 
     if request.method == "POST":
-        form = EventForm(request.POST, request.FILES)
+        form = EventForm(request.POST, request.FILES, request=request)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.organizer = request.user
@@ -83,10 +83,36 @@ def add_event(request):
 
             return redirect("home")
     else:
-        form = EventForm()
+        form = EventForm(request=request)
 
     context = {"form": form}
-    return render(request, "events/forms/add_event_form.html", context)
+    return render(request, "events/forms/add_edit_event_form.html", context)
+
+
+@roles_required(["organizer"])
+def edit_event(request, pk):
+    """"""
+
+    event = get_object_or_404(Event.objects.prefetch_related("organizer"), event_id=pk)
+
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES, instance=event, request=request)
+        if form.is_valid():
+            obj = form.save(commit=False)
+
+            if "image_url" in request.FILES:
+                obj.image_url = resize_image(request.FILES["image_url"])
+            else:
+                obj.image_url = "/event_images/default.png"
+
+            obj.save()
+            return redirect("event_detail", pk=event.event_id)
+        else:
+            messages.error(request, form.errors)
+
+    form = EventForm(instance=event, request=request)
+
+    return render(request, "events/forms/add_edit_event_form.html", {"form": form})
 
 
 def event_detail(request, pk):
