@@ -41,7 +41,7 @@ def home(request):
     if request.user.role == CustomUser.Role.CHECKIN_STAFF:
         events = (
             Event.objects.prefetch_related("staff")
-            .filter(staff=request.user)
+            .filter(staff=request.user, status=Event.Status.SCHEDULED)
             .order_by("date")
         )
         context = {"events": events}
@@ -49,7 +49,7 @@ def home(request):
 
     events = (
         Event.objects.prefetch_related("organizer")
-        .filter(organizer=request.user)
+        .filter(organizer=request.user, status=Event.Status.SCHEDULED)
         .order_by("date")
     )
 

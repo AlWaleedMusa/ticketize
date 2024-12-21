@@ -27,6 +27,11 @@ class CustomUser(AbstractUser):
 class Event(models.Model):
     """"""
 
+    class Status(models.TextChoices):
+        SCHEDULED = "scheduled", _("Scheduled")
+        FINISHED = "finished", _("Finished")
+        CANCELLED = "cancelled", _("Cancelled")
+
     event_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     organizer = models.ForeignKey(
         CustomUser,
@@ -45,6 +50,7 @@ class Event(models.Model):
     available_tickets = models.PositiveIntegerField(_("Available Tickets"))
     location = models.CharField(_("Location"), max_length=250)
     link = models.URLField(max_length=500)
+    status = models.CharField(_("Status"), max_length=20, choices=Status.choices, default=Status.SCHEDULED)
     confirmed_tickets = models.PositiveIntegerField(_("Confirmed Tickets"), default=0)
     checked_in_count = models.PositiveIntegerField(_("Checked-In Count"), default=0)
     created_at = models.DateField(auto_now=True)
@@ -57,11 +63,6 @@ class Event(models.Model):
         """"""
 
         return self.available_tickets <= 0
-
-    @property
-    def is_over(self):
-        """"""
-        return self.date < now().date()
 
 
 class Booking(models.Model):
@@ -88,6 +89,7 @@ class Ticket(models.Model):
         Event, verbose_name=_("Event"), related_name="tickets", on_delete=models.CASCADE
     )
     is_checked_in = models.BooleanField(default=False)
+    is_expired = models.BooleanField(_("Is Expired"), default=False)
 
     def __str__(self):
         return f"booking_id: {self.booking_id} / Event: {self.event.name}"

@@ -18,6 +18,7 @@ class EventForm(forms.ModelForm):
             "checked_in_count",
             "staff",
             "confirmed_tickets",
+            "status",
         )
         widgets = {
             "date": forms.DateInput(attrs={"type": "date", "min": date.today()}),
